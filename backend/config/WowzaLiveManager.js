@@ -65,8 +65,8 @@ class WowzaLiveManager {
                 wowzaPassword = serverConfig.senha_api || senha;
             }
 
-            // Construir URL com porta correta (6980 é a porta para gerenciar lives via PushPublish no Wowza)
-            const url = `http://${servidor}:${wowzaPort}/v2/servers/_defaultServer_/vhosts/_defaultVHost_/applications/${login}/pushpublish/mapentries/${live}/actions/${acao}`;
+            // CORREÇÃO: Sempre usar porta 6980 para API do Wowza (não 8087)
+            const url = `http://${servidor}:6980/v2/servers/_defaultServer_/vhosts/_defaultVHost_/applications/${login}/pushpublish/mapentries/${live}/actions/${acao}`;
 
             console.log(`🔧 Gerenciando live Wowza: ${url}`);
             console.log(`📋 Parâmetros: servidor=${servidor}, porta=${wowzaPort}, login=${login}, live=${live}, acao=${acao}`);

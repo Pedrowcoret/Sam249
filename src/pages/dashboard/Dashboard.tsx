@@ -670,20 +670,20 @@ const Dashboard: React.FC = () => {
       {/* Player Section */}
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
             <div className="flex items-center justify-between p-4 border-b border-gray-100">
-              <StreamingControlInline
-                login={userLogin}
-                onStatusChange={loadStreamStatus}
-                compact={true}
-              />
-              {streamStatus?.is_live && (
-                <div className="flex items-center space-x-2 px-4 py-2 bg-red-500 rounded-full shadow-lg">
-                  <div className="w-3 h-3 bg-white rounded-full animate-pulse"></div>
-                  <span className="text-sm font-bold text-white">AO VIVO</span>
-                </div>
-              )}
+              <div className="flex items-center space-x-3">
+                <h2 className="text-xl font-bold text-gray-900">Player de Transmissão</h2>
+                {streamStatus?.is_live && (
+                  <div className="flex items-center space-x-2 px-3 py-1 bg-red-500 rounded-full shadow-lg">
+                    <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
+                    <span className="text-xs font-bold text-white">AO VIVO</span>
+                  </div>
+                )}
+              </div>
             </div>
 
-            <div className="bg-black rounded-none overflow-hidden" style={{ height: '600px' }}>
+            <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 p-4">
+              {/* Player - 3 colunas */}
+              <div className="lg:col-span-3 bg-black rounded-lg overflow-hidden" style={{ height: '450px' }}>
               {streamStatus?.is_live ? (
                 <ClapprStreamingPlayer
                   src={`https://stmv1.udicast.com/${userLogin}/${userLogin}/playlist.m3u8`}
@@ -711,7 +711,6 @@ const Dashboard: React.FC = () => {
               ) : (
                 <div className="w-full h-full flex items-center justify-center text-white">
                   <div className="text-center">
-                  Bem-vindo ao seu painel de {user?.tipo === 'revenda' ? 'revenda' : 'streaming'}
                     <h3 className="text-xl font-semibold mb-2">Nenhuma Transmissão Ativa</h3>
                     <p className="text-gray-400 mb-4">
                       {playerError ? 'Erro de conexão com o servidor' : 'Inicie uma transmissão para visualizar aqui'}
@@ -719,21 +718,100 @@ const Dashboard: React.FC = () => {
                     {playerError && (
                       <button
                         onClick={loadStreamStatus}
-                        className="bg-primary-600 text-white px-4 py-2 rounded-md hover:bg-primary-700 flex items-center mx-auto"
+                        className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 flex items-center mx-auto"
                       >
                         <RefreshCw className="h-4 w-4 mr-2" />
                         Tentar Novamente
                       </button>
                     )}
                   </div>
-                  {user?.tipo === 'revenda' && (
-                    <div className="flex items-center space-x-2">
-                      <Activity className="h-4 w-4" />
-                      <span>Streamings: {user?.streamings || 0}</span>
-                    </div>
-                  )}
                 </div>
               )}
+              </div>
+
+              {/* Controles de Streaming - 1 coluna */}
+              <div className="lg:col-span-1 space-y-3">
+                <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-lg p-4 border border-gray-200">
+                  <h3 className="text-sm font-bold text-gray-900 mb-3 flex items-center">
+                    <Settings className="h-4 w-4 mr-2" />
+                    Controle de Streaming
+                  </h3>
+
+                  <div className="space-y-2">
+                    {/* Botão Parar - SEMPRE ATIVO */}
+                    <button
+                      onClick={handleStopTransmission}
+                      className="w-full flex items-center justify-center gap-2 px-3 py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-all duration-200 shadow-md hover:shadow-lg"
+                      title="Parar Transmissão"
+                    >
+                      <Square className="h-4 w-4" />
+                      <span className="text-sm font-medium">Parar Stream</span>
+                    </button>
+
+                    {streamStatus?.is_live ? (
+                      <button
+                        onClick={() => window.location.href = '/dashboard/iniciar-transmissao'}
+                        className="w-full flex items-center justify-center gap-2 px-3 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all duration-200 shadow-sm hover:shadow-md"
+                        title="Gerenciar Transmissão"
+                      >
+                        <Settings className="h-4 w-4" />
+                        <span className="text-sm font-medium">Gerenciar</span>
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => window.location.href = '/dashboard/iniciar-transmissao'}
+                        className="w-full flex items-center justify-center gap-2 px-3 py-2.5 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-all duration-200 shadow-sm hover:shadow-md"
+                        title="Iniciar Transmissão"
+                      >
+                        <Radio className="h-4 w-4" />
+                        <span className="text-sm font-medium">Iniciar</span>
+                      </button>
+                    )}
+
+                    <button
+                      onClick={loadStreamStatus}
+                      className="w-full flex items-center justify-center gap-2 px-3 py-2.5 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-all duration-200 shadow-sm hover:shadow-md"
+                      title="Atualizar Status"
+                    >
+                      <RefreshCw className="h-4 w-4" />
+                      <span className="text-sm font-medium">Atualizar</span>
+                    </button>
+                  </div>
+                </div>
+
+                {/* Status da Transmissão */}
+                {streamStatus?.is_live && (
+                  <div className="bg-gradient-to-br from-red-50 to-red-100 rounded-lg p-4 border border-red-200">
+                    <h4 className="text-xs font-bold text-red-900 mb-2 flex items-center">
+                      <div className="w-2 h-2 bg-red-600 rounded-full animate-pulse mr-2"></div>
+                      TRANSMITINDO
+                    </h4>
+                    <div className="space-y-2 text-xs text-gray-700">
+                      <div className="flex items-center justify-between">
+                        <span className="flex items-center gap-1">
+                          <Users className="h-3 w-3" />
+                          Espectadores
+                        </span>
+                        <span className="font-bold">{streamStatus.transmission?.stats.viewers || streamStatus.obs_stream?.viewers || 0}</span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="flex items-center gap-1">
+                          <Zap className="h-3 w-3" />
+                          Bitrate
+                        </span>
+                        <span className="font-bold">{streamStatus.transmission?.stats.bitrate || streamStatus.obs_stream?.bitrate || 0} kbps</span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="flex items-center gap-1">
+                          <Clock className="h-3 w-3" />
+                          Tempo
+                        </span>
+                        <span className="font-bold">{streamStatus.transmission?.stats.uptime || streamStatus.obs_stream?.uptime || '00:00:00'}</span>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
 
             {/* Playlist em Transmissão - Abaixo do Player */}
@@ -785,42 +863,7 @@ const Dashboard: React.FC = () => {
             {/* Ações Rápidas - Abaixo do Player */}
             <div className="p-6 border-t border-gray-200">
               <h3 className="text-lg font-bold text-gray-900 mb-4">Ações Rápidas</h3>
-              <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3">
-              <button
-                onClick={handleStopTransmission}
-                className="group flex flex-col items-center justify-center p-4 bg-gray-50 hover:bg-red-50 rounded-xl transition-all duration-200 border-2 border-transparent hover:border-red-200"
-                title="Parar Transmissão"
-              >
-                <div className="w-12 h-12 bg-red-100 group-hover:bg-red-500 rounded-lg flex items-center justify-center mb-2 transition-colors">
-                  <Square className="h-6 w-6 text-red-600 group-hover:text-white transition-colors" />
-                </div>
-                <span className="text-xs font-medium text-gray-700 group-hover:text-red-600 text-center">Parar Stream</span>
-              </button>
-
-              {streamStatus?.is_live ? (
-                <button
-                  onClick={() => window.location.href = '/dashboard/iniciar-transmissao'}
-                  className="group flex flex-col items-center justify-center p-4 bg-gray-50 hover:bg-blue-50 rounded-xl transition-all duration-200 border-2 border-transparent hover:border-blue-200"
-                  title="Gerenciar Transmissão"
-                >
-                  <div className="w-12 h-12 bg-blue-100 group-hover:bg-blue-500 rounded-lg flex items-center justify-center mb-2 transition-colors">
-                    <Settings className="h-6 w-6 text-blue-600 group-hover:text-white transition-colors" />
-                  </div>
-                  <span className="text-xs font-medium text-gray-700 group-hover:text-blue-600 text-center">Gerenciar</span>
-                </button>
-              ) : (
-                <button
-                  onClick={() => window.location.href = '/dashboard/iniciar-transmissao'}
-                  className="group flex flex-col items-center justify-center p-4 bg-gray-50 hover:bg-green-50 rounded-xl transition-all duration-200 border-2 border-transparent hover:border-green-200"
-                  title="Iniciar Transmissão"
-                >
-                  <div className="w-12 h-12 bg-green-100 group-hover:bg-green-500 rounded-lg flex items-center justify-center mb-2 transition-colors">
-                    <Radio className="h-6 w-6 text-green-600 group-hover:text-white transition-colors" />
-                  </div>
-                  <span className="text-xs font-medium text-gray-700 group-hover:text-green-600 text-center">Iniciar</span>
-                </button>
-              )}
-
+              <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-3">
               <button
                 onClick={() => window.location.href = '/dashboard/gerenciarvideos'}
                 className="group flex flex-col items-center justify-center p-4 bg-gray-50 hover:bg-blue-50 rounded-xl transition-all duration-200 border-2 border-transparent hover:border-blue-200"
@@ -834,46 +877,57 @@ const Dashboard: React.FC = () => {
 
               <button
                 onClick={() => window.location.href = '/dashboard/espectadores'}
-                className="group flex flex-col items-center justify-center p-4 bg-gray-50 hover:bg-green-50 rounded-xl transition-all duration-200 border-2 border-transparent hover:border-green-200"
+                className="group flex flex-col items-center justify-center p-4 bg-gray-50 hover:bg-blue-50 rounded-xl transition-all duration-200 border-2 border-transparent hover:border-blue-200"
                 title="Ver Espectadores"
               >
-                <div className="w-12 h-12 bg-green-100 group-hover:bg-green-500 rounded-lg flex items-center justify-center mb-2 transition-colors">
-                  <Users className="h-6 w-6 text-green-600 group-hover:text-white transition-colors" />
+                <div className="w-12 h-12 bg-blue-100 group-hover:bg-blue-500 rounded-lg flex items-center justify-center mb-2 transition-colors">
+                  <Users className="h-6 w-6 text-blue-600 group-hover:text-white transition-colors" />
                 </div>
-                <span className="text-xs font-medium text-gray-700 group-hover:text-green-600 text-center">Espectadores</span>
+                <span className="text-xs font-medium text-gray-700 group-hover:text-blue-600 text-center">Espectadores</span>
               </button>
 
               <button
                 onClick={() => window.location.href = '/dashboard/playlists'}
-                className="group flex flex-col items-center justify-center p-4 bg-gray-50 hover:bg-orange-50 rounded-xl transition-all duration-200 border-2 border-transparent hover:border-orange-200"
+                className="group flex flex-col items-center justify-center p-4 bg-gray-50 hover:bg-blue-50 rounded-xl transition-all duration-200 border-2 border-transparent hover:border-blue-200"
                 title="Gerenciar Playlists"
               >
-                <div className="w-12 h-12 bg-orange-100 group-hover:bg-orange-500 rounded-lg flex items-center justify-center mb-2 transition-colors">
-                  <Play className="h-6 w-6 text-orange-600 group-hover:text-white transition-colors" />
+                <div className="w-12 h-12 bg-blue-100 group-hover:bg-blue-500 rounded-lg flex items-center justify-center mb-2 transition-colors">
+                  <Play className="h-6 w-6 text-blue-600 group-hover:text-white transition-colors" />
                 </div>
-                <span className="text-xs font-medium text-gray-700 group-hover:text-orange-600 text-center">Playlists</span>
+                <span className="text-xs font-medium text-gray-700 group-hover:text-blue-600 text-center">Playlists</span>
               </button>
 
               <button
                 onClick={() => window.location.href = '/dashboard/players'}
-                className="group flex flex-col items-center justify-center p-4 bg-gray-50 hover:bg-cyan-50 rounded-xl transition-all duration-200 border-2 border-transparent hover:border-cyan-200"
+                className="group flex flex-col items-center justify-center p-4 bg-gray-50 hover:bg-blue-50 rounded-xl transition-all duration-200 border-2 border-transparent hover:border-blue-200"
                 title="Players Externos"
               >
-                <div className="w-12 h-12 bg-cyan-100 group-hover:bg-cyan-500 rounded-lg flex items-center justify-center mb-2 transition-colors">
-                  <Monitor className="h-6 w-6 text-cyan-600 group-hover:text-white transition-colors" />
+                <div className="w-12 h-12 bg-blue-100 group-hover:bg-blue-500 rounded-lg flex items-center justify-center mb-2 transition-colors">
+                  <Monitor className="h-6 w-6 text-blue-600 group-hover:text-white transition-colors" />
                 </div>
-                <span className="text-xs font-medium text-gray-700 group-hover:text-cyan-600 text-center">Players</span>
+                <span className="text-xs font-medium text-gray-700 group-hover:text-blue-600 text-center">Players</span>
               </button>
 
               <button
                 onClick={() => window.location.href = '/dashboard/dados-conexao'}
-                className="group flex flex-col items-center justify-center p-4 bg-gray-50 hover:bg-slate-50 rounded-xl transition-all duration-200 border-2 border-transparent hover:border-slate-200"
+                className="group flex flex-col items-center justify-center p-4 bg-gray-50 hover:bg-blue-50 rounded-xl transition-all duration-200 border-2 border-transparent hover:border-blue-200"
                 title="Dados de Conexão"
               >
-                <div className="w-12 h-12 bg-slate-100 group-hover:bg-slate-500 rounded-lg flex items-center justify-center mb-2 transition-colors">
-                  <Server className="h-6 w-6 text-slate-600 group-hover:text-white transition-colors" />
+                <div className="w-12 h-12 bg-blue-100 group-hover:bg-blue-500 rounded-lg flex items-center justify-center mb-2 transition-colors">
+                  <Server className="h-6 w-6 text-blue-600 group-hover:text-white transition-colors" />
                 </div>
-                <span className="text-xs font-medium text-gray-700 group-hover:text-slate-600 text-center">Conexão</span>
+                <span className="text-xs font-medium text-gray-700 group-hover:text-blue-600 text-center">Conexão</span>
+              </button>
+
+              <button
+                onClick={() => window.location.href = '/dashboard/configuracoes'}
+                className="group flex flex-col items-center justify-center p-4 bg-gray-50 hover:bg-blue-50 rounded-xl transition-all duration-200 border-2 border-transparent hover:border-blue-200"
+                title="Configurações"
+              >
+                <div className="w-12 h-12 bg-blue-100 group-hover:bg-blue-500 rounded-lg flex items-center justify-center mb-2 transition-colors">
+                  <Settings className="h-6 w-6 text-blue-600 group-hover:text-white transition-colors" />
+                </div>
+                <span className="text-xs font-medium text-gray-700 group-hover:text-blue-600 text-center">Configurações</span>
               </button>
             </div>
             </div>
