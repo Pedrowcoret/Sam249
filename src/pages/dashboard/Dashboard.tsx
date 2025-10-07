@@ -479,109 +479,6 @@ const Dashboard: React.FC = () => {
         </div>
       </div>
 
-      {/* Controle de Streaming */}
-      <div className="bg-white rounded-2xl shadow-sm p-8 border border-gray-100">
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <h2 className="text-2xl font-bold text-gray-900">Controle de Streaming</h2>
-            <p className="text-sm text-gray-600 mt-1">
-              Gerenciar servidor de streaming: {userLogin}
-            </p>
-          </div>
-          {wowzaStatus && (
-            <div className={`flex items-center space-x-2 px-4 py-2 rounded-lg ${
-              wowzaStatus.running ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-600'
-            }`}>
-              <div className={`w-3 h-3 rounded-full ${
-                wowzaStatus.running ? 'bg-green-500 animate-pulse' : 'bg-gray-400'
-              }`}></div>
-              <span className="font-medium text-sm">
-                {wowzaStatus.running ? 'Servidor Online' : 'Servidor Offline'}
-              </span>
-            </div>
-          )}
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {/* Botão Iniciar */}
-          <button
-            onClick={handleWowzaStart}
-            disabled={wowzaControlLoading || wowzaStatus?.running}
-            className={`group relative overflow-hidden rounded-2xl p-8 transition-all duration-300 transform hover:scale-105 ${
-              wowzaStatus?.running
-                ? 'bg-gray-100 cursor-not-allowed opacity-50'
-                : 'bg-gradient-to-br from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 shadow-lg hover:shadow-xl'
-            }`}
-          >
-            <div className="absolute top-0 right-0 w-32 h-32 bg-white opacity-10 rounded-full -mr-16 -mt-16 group-hover:scale-150 transition-transform duration-500"></div>
-
-            <div className="relative z-10 flex flex-col items-center text-white">
-              <div className="w-20 h-20 bg-white bg-opacity-20 rounded-2xl flex items-center justify-center mb-4 group-hover:bg-opacity-30 transition-all duration-300">
-                {wowzaControlLoading ? (
-                  <RefreshCw className="h-10 w-10 animate-spin" />
-                ) : (
-                  <Play className="h-10 w-10" />
-                )}
-              </div>
-              <h3 className="text-2xl font-bold mb-2">Iniciar</h3>
-              <p className="text-sm text-center opacity-90">
-                {wowzaStatus?.running ? 'Já está rodando' : 'Iniciar servidor'}
-              </p>
-            </div>
-          </button>
-
-          {/* Botão Parar */}
-          <button
-            onClick={handleWowzaStop}
-            disabled={wowzaControlLoading || !wowzaStatus?.running}
-            className={`group relative overflow-hidden rounded-2xl p-8 transition-all duration-300 transform hover:scale-105 ${
-              !wowzaStatus?.running
-                ? 'bg-gray-100 cursor-not-allowed opacity-50'
-                : 'bg-gradient-to-br from-red-500 to-rose-600 hover:from-red-600 hover:to-rose-700 shadow-lg hover:shadow-xl'
-            }`}
-          >
-            <div className="absolute top-0 right-0 w-32 h-32 bg-white opacity-10 rounded-full -mr-16 -mt-16 group-hover:scale-150 transition-transform duration-500"></div>
-
-            <div className="relative z-10 flex flex-col items-center text-white">
-              <div className="w-20 h-20 bg-white bg-opacity-20 rounded-2xl flex items-center justify-center mb-4 group-hover:bg-opacity-30 transition-all duration-300">
-                {wowzaControlLoading ? (
-                  <RefreshCw className="h-10 w-10 animate-spin" />
-                ) : (
-                  <Square className="h-10 w-10" />
-                )}
-              </div>
-              <h3 className="text-2xl font-bold mb-2">Parar</h3>
-              <p className="text-sm text-center opacity-90">
-                {!wowzaStatus?.running ? 'Já está parado' : 'Parar servidor'}
-              </p>
-            </div>
-          </button>
-
-          {/* Botão Reiniciar */}
-          <button
-            onClick={handleWowzaRestart}
-            disabled={wowzaControlLoading}
-            className="group relative overflow-hidden rounded-2xl p-8 bg-gradient-to-br from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            <div className="absolute top-0 right-0 w-32 h-32 bg-white opacity-10 rounded-full -mr-16 -mt-16 group-hover:scale-150 transition-transform duration-500"></div>
-
-            <div className="relative z-10 flex flex-col items-center text-white">
-              <div className="w-20 h-20 bg-white bg-opacity-20 rounded-2xl flex items-center justify-center mb-4 group-hover:bg-opacity-30 transition-all duration-300">
-                {wowzaControlLoading ? (
-                  <RefreshCw className="h-10 w-10 animate-spin" />
-                ) : (
-                  <RefreshCw className="h-10 w-10" />
-                )}
-              </div>
-              <h3 className="text-2xl font-bold mb-2">Reiniciar</h3>
-              <p className="text-sm text-center opacity-90">
-                Reiniciar servidor
-              </p>
-            </div>
-          </button>
-        </div>
-      </div>
-
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100 hover:shadow-md transition-shadow">
@@ -683,33 +580,35 @@ const Dashboard: React.FC = () => {
 
             <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 p-4">
               {/* Player - 3 colunas */}
-              <div className="lg:col-span-3 bg-black rounded-lg overflow-hidden" style={{ height: '450px' }}>
+              <div className="lg:col-span-3 bg-black rounded-lg overflow-hidden" style={{ paddingTop: '56.25%', position: 'relative' }}>
               {streamStatus?.is_live ? (
-                <ClapprStreamingPlayer
-                  src={`https://stmv1.udicast.com/${userLogin}/${userLogin}/playlist.m3u8`}
-                  title={playlistName || 'Transmissão'}
-                  isLive={true}
-                  autoplay={true}
-                  controls={true}
-                  className="w-full h-full"
-                  streamStats={{
-                    viewers: streamStatus.transmission?.stats.viewers || streamStatus.obs_stream?.viewers || 0,
-                    bitrate: streamStatus.transmission?.stats.bitrate || streamStatus.obs_stream?.bitrate || 0,
-                    uptime: streamStatus.transmission?.stats.uptime || streamStatus.obs_stream?.uptime || '00:00:00',
-                    quality: '1080p',
-                    isRecording: streamStatus.obs_stream?.recording || false
-                  }}
-                  onError={(error) => {
-                    console.error('Erro no player do dashboard:', error);
-                    setPlayerError('Erro ao carregar player');
-                  }}
-                  onReady={() => {
-                    console.log('Player Clappr do dashboard pronto');
-                    setPlayerError(null);
-                  }}
-                />
+                <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}>
+                  <ClapprStreamingPlayer
+                    src={`https://stmv1.udicast.com/${userLogin}/${userLogin}/playlist.m3u8`}
+                    title={playlistName || 'Transmissão'}
+                    isLive={true}
+                    autoplay={true}
+                    controls={true}
+                    className="w-full h-full"
+                    streamStats={{
+                      viewers: streamStatus.transmission?.stats.viewers || streamStatus.obs_stream?.viewers || 0,
+                      bitrate: streamStatus.transmission?.stats.bitrate || streamStatus.obs_stream?.bitrate || 0,
+                      uptime: streamStatus.transmission?.stats.uptime || streamStatus.obs_stream?.uptime || '00:00:00',
+                      quality: '1080p',
+                      isRecording: streamStatus.obs_stream?.recording || false
+                    }}
+                    onError={(error) => {
+                      console.error('Erro no player do dashboard:', error);
+                      setPlayerError('Erro ao carregar player');
+                    }}
+                    onReady={() => {
+                      console.log('Player Clappr do dashboard pronto');
+                      setPlayerError(null);
+                    }}
+                  />
+                </div>
               ) : (
-                <div className="w-full h-full flex items-center justify-center text-white">
+                <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }} className="flex items-center justify-center text-white">
                   <div className="text-center">
                     <h3 className="text-xl font-semibold mb-2">Nenhuma Transmissão Ativa</h3>
                     <p className="text-gray-400 mb-4">
@@ -728,55 +627,84 @@ const Dashboard: React.FC = () => {
                 </div>
               )}
               </div>
+              </div>
 
-              {/* Controles de Streaming - 1 coluna */}
+              {/* Controles Wowza - 1 coluna */}
               <div className="lg:col-span-1 space-y-3">
                 <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-lg p-4 border border-gray-200">
                   <h3 className="text-sm font-bold text-gray-900 mb-3 flex items-center">
-                    <Settings className="h-4 w-4 mr-2" />
-                    Controle de Streaming
+                    <Server className="h-4 w-4 mr-2" />
+                    Servidor Wowza
                   </h3>
 
+                  {wowzaStatus && (
+                    <div className={`flex items-center justify-center space-x-2 px-3 py-2 rounded-lg mb-3 ${wowzaStatus.running ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-600'}`}>
+                      <div className={`w-2 h-2 rounded-full ${wowzaStatus.running ? 'bg-green-500 animate-pulse' : 'bg-gray-400'}`}></div>
+                      <span className="font-medium text-xs">
+                        {wowzaStatus.running ? 'Online' : 'Offline'}
+                      </span>
+                    </div>
+                  )}
+
                   <div className="space-y-2">
-                    {/* Botão Parar - SEMPRE ATIVO */}
                     <button
-                      onClick={handleStopTransmission}
-                      className="w-full flex items-center justify-center gap-2 px-3 py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-all duration-200 shadow-md hover:shadow-lg"
-                      title="Parar Transmissão"
+                      onClick={handleWowzaStart}
+                      disabled={wowzaControlLoading || wowzaStatus?.running}
+                      className="w-full flex items-center justify-center gap-2 px-3 py-2.5 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-all duration-200 shadow-sm hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
+                      title="Iniciar Servidor"
                     >
-                      <Square className="h-4 w-4" />
-                      <span className="text-sm font-medium">Parar Stream</span>
+                      {wowzaControlLoading ? (
+                        <RefreshCw className="h-4 w-4 animate-spin" />
+                      ) : (
+                        <Play className="h-4 w-4" />
+                      )}
+                      <span className="text-sm font-medium">Iniciar</span>
                     </button>
 
-                    {streamStatus?.is_live ? (
-                      <button
-                        onClick={() => window.location.href = '/dashboard/iniciar-transmissao'}
-                        className="w-full flex items-center justify-center gap-2 px-3 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all duration-200 shadow-sm hover:shadow-md"
-                        title="Gerenciar Transmissão"
-                      >
-                        <Settings className="h-4 w-4" />
-                        <span className="text-sm font-medium">Gerenciar</span>
-                      </button>
-                    ) : (
-                      <button
-                        onClick={() => window.location.href = '/dashboard/iniciar-transmissao'}
-                        className="w-full flex items-center justify-center gap-2 px-3 py-2.5 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-all duration-200 shadow-sm hover:shadow-md"
-                        title="Iniciar Transmissão"
-                      >
-                        <Radio className="h-4 w-4" />
-                        <span className="text-sm font-medium">Iniciar</span>
-                      </button>
-                    )}
+                    <button
+                      onClick={handleWowzaStop}
+                      disabled={wowzaControlLoading || !wowzaStatus?.running}
+                      className="w-full flex items-center justify-center gap-2 px-3 py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-all duration-200 shadow-sm hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
+                      title="Parar Servidor"
+                    >
+                      {wowzaControlLoading ? (
+                        <RefreshCw className="h-4 w-4 animate-spin" />
+                      ) : (
+                        <Square className="h-4 w-4" />
+                      )}
+                      <span className="text-sm font-medium">Parar</span>
+                    </button>
 
                     <button
-                      onClick={loadStreamStatus}
-                      className="w-full flex items-center justify-center gap-2 px-3 py-2.5 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-all duration-200 shadow-sm hover:shadow-md"
-                      title="Atualizar Status"
+                      onClick={handleWowzaRestart}
+                      disabled={wowzaControlLoading}
+                      className="w-full flex items-center justify-center gap-2 px-3 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all duration-200 shadow-sm hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
+                      title="Reiniciar Servidor"
                     >
-                      <RefreshCw className="h-4 w-4" />
-                      <span className="text-sm font-medium">Atualizar</span>
+                      {wowzaControlLoading ? (
+                        <RefreshCw className="h-4 w-4 animate-spin" />
+                      ) : (
+                        <RefreshCw className="h-4 w-4" />
+                      )}
+                      <span className="text-sm font-medium">Reiniciar</span>
                     </button>
                   </div>
+                </div>
+
+                {/* Botão Parar Stream - Separado e sempre ativo */}
+                <div className="bg-gradient-to-br from-red-50 to-red-100 rounded-lg p-4 border-2 border-red-200">
+                  <h3 className="text-sm font-bold text-red-900 mb-3 flex items-center">
+                    <AlertCircle className="h-4 w-4 mr-2" />
+                    Parar Transmissão
+                  </h3>
+                  <button
+                    onClick={handleStopTransmission}
+                    className="w-full flex items-center justify-center gap-2 px-3 py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-all duration-200 shadow-md hover:shadow-lg"
+                    title="Parar Transmissão de Playlist"
+                  >
+                    <Square className="h-4 w-4" />
+                    <span className="text-sm font-medium">Parar Playlist</span>
+                  </button>
                 </div>
 
                 {/* Status da Transmissão */}
@@ -814,7 +742,7 @@ const Dashboard: React.FC = () => {
               </div>
             </div>
 
-            {/* Playlist em Transmissão - Abaixo do Player */}
+            {/* Info da Transmissão - Abaixo do Player */}
             {streamStatus?.is_live && (
               <div className="p-5 border-t border-gray-200 bg-gray-50">
                 <div className="flex items-center justify-between mb-3">
@@ -929,7 +857,6 @@ const Dashboard: React.FC = () => {
                 </div>
                 <span className="text-xs font-medium text-gray-700 group-hover:text-blue-600 text-center">Configurações</span>
               </button>
-            </div>
             </div>
       </div>
 

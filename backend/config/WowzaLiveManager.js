@@ -66,10 +66,11 @@ class WowzaLiveManager {
             }
 
             // CORREÇÃO: Sempre usar porta 6980 para API do Wowza (não 8087)
-            const url = `http://${servidor}:6980/v2/servers/_defaultServer_/vhosts/_defaultVHost_/applications/${login}/pushpublish/mapentries/${live}/actions/${acao}`;
+            const apiPort = 6980;
+            const url = `http://${servidor}:${apiPort}/v2/servers/_defaultServer_/vhosts/_defaultVHost_/applications/${login}/pushpublish/mapentries/${live}/actions/${acao}`;
 
             console.log(`🔧 Gerenciando live Wowza: ${url}`);
-            console.log(`📋 Parâmetros: servidor=${servidor}, porta=${wowzaPort}, login=${login}, live=${live}, acao=${acao}`);
+            console.log(`📋 Parâmetros: servidor=${servidor}, porta=${apiPort}, usuario=${wowzaUser}, login=${login}, live=${live}, acao=${acao}`);
 
             const response = await fetch(url, {
                 method: 'PUT',
@@ -84,8 +85,14 @@ class WowzaLiveManager {
             const responseText = await response.text();
             console.log(`📊 Resposta Wowza (${response.status}):`, responseText);
 
-            // Verificar se foi bem-sucedido
-            if (responseText.toLowerCase().includes('successfully') || responseText.toLowerCase().includes('success') || response.ok) {
+            // Verificar se foi bem-sucedido (NUNCA aceitar 401 ou 403 como sucesso)
+            if (response.status === 401 || response.status === 403) {
+                console.error(`❌ Erro de autenticação (${response.status}) para live ${live}`);
+                console.error(`🔑 Verificar credenciais: usuario=${wowzaUser}`);
+                return 'erro';
+            }
+
+            if (response.ok || responseText.toLowerCase().includes('successfully') || responseText.toLowerCase().includes('success')) {
                 console.log(`✅ Ação ${acao} executada com sucesso para live ${live}`);
                 return 'ok';
             } else {
